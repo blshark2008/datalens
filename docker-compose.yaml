@@ -79,7 +79,7 @@ services:
   #
   control-api:
     container_name: datalens-control-api
-    image: ghcr.io/datalens-tech/datalens-control-api:0.2457.0
+    build: ../datalens-control-api
     environment:
       BI_API_UWSGI_WORKERS_COUNT: 4
       RQE_FORCE_OFF: 1
@@ -103,7 +103,7 @@ services:
   #
   data-api:
     container_name: datalens-data-api
-    image: ghcr.io/datalens-tech/datalens-data-api:0.2457.0
+    build: ../ddatalens-data-api
     environment:
       GUNICORN_WORKERS_COUNT: 5
       RQE_FORCE_OFF: 1
@@ -134,7 +134,7 @@ services:
   #
   us:
     container_name: datalens-us
-    image: ghcr.io/datalens-tech/datalens-us:1.39.0
+    build: ../datalens-us
     environment:
       APP_INSTALLATION: opensource
       APP_ENV: prod
@@ -166,7 +166,7 @@ services:
   #
   ui-api:
     container_name: datalens-ui-api
-    image: ghcr.io/datalens-tech/datalens-ui:0.3831.0
+    build: ../datalens-ui
     environment:
       APP_MODE: api
       APP_ENV: production
@@ -181,7 +181,7 @@ services:
   #
   meta-manager:
     container_name: datalens-meta-manager
-    image: ghcr.io/datalens-tech/datalens-meta-manager:0.52.0
+    build: ../datalens-meta-manager
     environment:
       APP_INSTALLATION: opensource
       APP_ENV: prod
@@ -212,7 +212,7 @@ services:
   #
   auth:
     container_name: datalens-auth
-    image: ghcr.io/datalens-tech/datalens-auth:0.27.0
+    build: ../datalens-auth
     environment:
       APP_INSTALLATION: opensource
       APP_ENV: prod
@@ -242,7 +242,7 @@ services:
   #
   ui:
     container_name: datalens-ui
-    image: ghcr.io/datalens-tech/datalens-ui:0.3831.0
+    build: ../datalens-ui
     environment:
       APP_MODE: full
       APP_ENV: production
@@ -281,6 +281,52 @@ services:
       - ${UI_PORT:-8080}:8080
     networks:
       - default
+    
+    
+  data-loader:
+    container_name: datalens-data-loader
+    build:
+      context: ./dev/data-loader
+    environment:
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: pg-user
+      PG_DB: database_cardio
+      PG_PASSWORD: postgres
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - 3042:8080
+    networks:
+      - default
+
+  hand-data-api:
+    container_name: datalens-hand-data-api
+    build:
+      context: ./dev/hand-data-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      HAND_DB_HOST: postgres
+      HAND_DB_PORT: 5432
+      HAND_DB_NAME: database_cardio
+      HAND_DB_USER: pg-user
+      HAND_DB_PASSWORD: postgres
+      PYTHONUNBUFFERED: 1
+      CONTROL_API_CRYPTO_KEY: ${CONTROL_API_CRYPTO_KEY}
+
+ 
+    ports:
+      - "3060:8080"
+    networks:
+      - default
+
+    
+    
+    
 #
 volumes:
   db-postgres:

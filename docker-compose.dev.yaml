@@ -24,6 +24,7 @@ services:
     environment:
       TEMPORAL_ADDRESS: temporal:7233
       TEMPORAL_AUTH_ENABLED: false
+
     depends_on:
       - temporal
     ports:
@@ -44,6 +45,7 @@ services:
     environment:
       RUN_DEV: /etc/service/dl_api/run
       PRETTY_LOG: ${PRETTY_LOG:-false}
+      FEATURE_WORKBOOK_EXPORT_ENABLED: true
     volumes:
       - ../datalens-backend/app:/src/app
       - ../datalens-backend/lib:/src/lib
@@ -91,7 +93,7 @@ services:
       args:
         - image=ghcr.io/datalens-tech/datalens-us:1.39.0
     tty: true
-    user: ${USER_DEV:-app}
+    user: "0:0"#${USER_DEV:-app}
     environment:
       RUN_DEV: npx tsc-watch --onSuccess ./scripts/preflight.sh
     volumes:
@@ -123,6 +125,7 @@ services:
     environment:
       APP_PORT_UNSET: 1
       RUN_DEV: pnpm run i18n:prepare && pnpm exec app-builder dev
+      FEATURE_WORKBOOK_EXPORT_ENABLED: true
     volumes:
       - ${DIR_REPO_UI:-../datalens-ui}:/opt/app
       - ./dev/.env.empty:/opt/app/.env
@@ -168,7 +171,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    image: datalens-dev:auth
+    #image: datalens-dev:auth
     build:
       context: ./dev/nodejs
       args:
@@ -178,10 +181,10 @@ services:
     environment:
       RUN_DEV: npx tsc-watch --onSuccess ./scripts/preflight.sh
     volumes:
-      - ../datalens-auth:/opt/app
-      - ./dev/.env.empty:/opt/app/.env
-      - ./dev/.env.empty:/opt/app/.env.development
-      - node-modules-auth:/opt/app/node_modules
+     - ../datalens-auth:/opt/app
+     - ./dev/.env.empty:/opt/app/.env
+     - ./dev/.env.empty:/opt/app/.env.development
+      #- node-modules-auth:/opt/app/node_modules
     ports:
       - 8088:8080
     networks:
@@ -201,8 +204,18 @@ services:
     ulimits:
       core: 0
     environment:
-      APP_PORT_UNSET: 1
-      RUN_DEV: pnpm run i18n:prepare && pnpm exec app-builder dev
+      - AUTH_ENDPOINT=${AUTH_ENDPOINT}
+      - META_MANAGER_ENDPOINT=${META_MANAGER_ENDPOINT}
+      - FEATURE_WORKBOOK_EXPORT_ENABLED=true
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=${POSTGRES_USER:-pg-user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB_US=${POSTGRES_DB_US:-pg-us-db}
+      - POSTGRES_DB_AUTH=${POSTGRES_DB_AUTH:-pg-auth-db}
+      
+      - APP_PORT_UNSET=1
+      - RUN_DEV=pnpm run i18n:prepare && pnpm exec app-builder dev
+     
     volumes:
       - ${DIR_REPO_UI:-../datalens-ui}:/opt/app
       - ./dev/.env.empty:/opt/app/.env
@@ -211,6 +224,8 @@ services:
     ports:
       - 8080:8080
       - 8880:8880
+      - 8890:8890
+      
     depends_on:
       - us
     networks:
@@ -251,6 +266,49 @@ services:
       - ${EXPOSE_PORTS_8088:-0}:8088
     networks:
       - default
+
+
+  data-loader:
+    container_name: datalens-data-loader
+    build:
+      context: ./dev/data-loader
+    environment:
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_USER: pg-user
+      PG_DB: database_cardio
+      PG_PASSWORD: postgres
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - 3042:8080
+    networks:
+      - default
+
+  hand-data-api:
+    container_name: datalens-hand-data-api
+    build:
+      context: ./dev/hand-data-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      HAND_DB_HOST: postgres
+      HAND_DB_PORT: 5432
+      HAND_DB_NAME: database_cardio
+      HAND_DB_USER: pg-user
+      HAND_DB_PASSWORD: postgres
+      PYTHONUNBUFFERED: 1
+      CONTROL_API_CRYPTO_KEY: ${CONTROL_API_CRYPTO_KEY}
+
+ 
+    ports:
+      - "3060:8080"
+    networks:
+      - default
+
 #
 volumes:
   db-postgres:
@@ -264,3 +322,6 @@ volumes:
 networks:
   default:
     enable_ipv6: ${IS_IPV6:-false}
+
+
+
