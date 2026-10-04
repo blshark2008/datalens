@@ -32,19 +32,34 @@ DataLens requires Docker to be installed. Follow these instructions depending on
 
 - The minimal supported version of the legacy docker-compose utility (as a separate package) is `1.29.0`. It is included in the base APT repository as the `docker-compose` package only on Ubuntu 22.04.
 
-### Running containers
+## Запуск контейнеров
 
-Clone repository:
-
-```bash
-git clone https://github.com/blshark2008/datalens-fork.git && cd datalens-fork
-```
-
-For the quick start use the following command to start DataLens containers:
+Клонируем репозиторий:
 
 ```bash
-HC=1 docker compose up
+# 1. Клонировать все репозитории
+mkdir -p datalens-fork && cd datalens-fork
+git clone https://github.com/blshark2008/datalens.git
+git clone https://github.com/blshark2008/datalens-ui.git
+git clone https://github.com/blshark2008/datalens-backend.git
+git clone https://github.com/blshark2008/datalens-us.git
+git clone https://github.com/blshark2008/datalens-auth.git
+
+
+# 2. Запускаем
+cd /datalens
+docker compose up -d
+
 ```
+
+```
+
+Для исправления подключения дефолтных данных выполнить скрипт 
+
+docker exec -i datalens-postgres bash < ~/datalens-fork/datalens/postgres/post-init/def-data-init.sh
+
+
+
 
 This command will launch all containers required to run DataLens, and the UI will be available on http://localhost:8080 (default user and password is `admin`, `admin`).
 
