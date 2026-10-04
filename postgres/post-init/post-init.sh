@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS dashboard_permissions (
 
 -- Последовательность для id
 CREATE SEQUENCE IF NOT EXISTS dashboard_permissions_id_seq
-    AS integer START WITH 1 INCREMENT BY 1 NO MINIMIZE NO MAXVALUE CACHE 1;
+    AS integer START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
 
 ALTER SEQUENCE dashboard_permissions_id_seq OWNED BY dashboard_permissions.id;
 
