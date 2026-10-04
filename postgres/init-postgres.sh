@@ -102,7 +102,7 @@ EOSQL
 
 if [ -f "/init/post-init/post-init.sh" ]; then
   echo "  run post init script in background..."
-  /init/post-init/post-init.sh &
+  /init/post-init/post-init.sh
 fi
 
 echo "Finish PostgreSQL init script"
