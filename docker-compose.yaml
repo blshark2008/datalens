@@ -41,6 +41,7 @@ services:
     volumes:
       - db-postgres:/var/lib/postgresql/data
       - ./postgres/post-init/post-init.sh:/init/post-init/post-init.sh
+      - ./postgres/zz-dashboard-permissions.sql:/docker-entrypoint-initdb.d/zz-dashboard-permissions.sql
     networks:
       - default
   #
