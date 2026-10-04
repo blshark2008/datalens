@@ -1,14 +1,20 @@
-# DataLens &middot; [![Release](https://img.shields.io/github/v/release/datalens-tech/datalens?logo=github&color=orange)](https://github.com/datalens-tech/datalens/releases) [![last commit](https://img.shields.io/github/last-commit/datalens-tech/datalens?logo=github)](https://github.com/datalens-tech/datalens/commits/main)
+# DataLens &middot; 
 
-[![datalens-ui](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgithub.com%2Fdatalens-tech%2Fdatalens%2Fraw%2Fmain%2Fversions-config.json&query=%24.uiVersion&label=ui%20version)](https://github.com/datalens-tech/datalens-ui)
-[![datalens-us](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgithub.com%2Fdatalens-tech%2Fdatalens%2Fraw%2Fmain%2Fversions-config.json&query=%24.usVersion&label=us%20version)](https://github.com/datalens-tech/datalens-us)
-[![datalens-backend](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgithub.com%2Fdatalens-tech%2Fdatalens%2Fraw%2Fmain%2Fversions-config.json&query=%24.backendVersion&label=backend%20version)](https://github.com/datalens-tech/datalens-backend)
-[![datalens-auth](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgithub.com%2Fdatalens-tech%2Fdatalens%2Fraw%2Fmain%2Fversions-config.json&query=%24.authVersion&label=auth%20version)](https://github.com/datalens-tech/datalens-auth)
-[![datalens-meta-manager](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgithub.com%2Fdatalens-tech%2Fdatalens%2Fraw%2Fmain%2Fversions-config.json&query=%24.metaManagerVersion&label=meta-manager%20version)](https://github.com/datalens-tech/datalens-meta-manager)
+Форк  с доработками под задачи медицинских организаций: контроль доступа к дашбордам, ручной ввод данных и кастомизация брендинга.
 
+Что добавлено
+🏥 Разграничение доступа к дашбордам
+Пользователи с ролью viewer видят только те дашборды, к которым им явно выданы права
+Права назначаются администратором на конкретные дашборды — пользователь не видит остальное
+Редактирование виджетов и дашбордов для viewer скрыто
+📋 Ручной ввод данных
+Администратор может создавать таблицы и заполнять их данными вручную
+Подходит для небольших наборов данных, которые не автоматизированы: справочники, плановые показатели, разовые замеры
+Данные из ручных таблиц доступны для построения дашбордов наравне с автоматическими источниками
+🎨 Кастомизация брендинга
+Возможность заменить логотип и текст в интерфейсе под нужды учреждения
+Актуально для внутреннего использования — сотрудники видят бренд своей организации
 
-
-[**DataLens**](https://datalens.tech) is a modern business intelligence and data visualization system. It was developed and extensively used as a primary BI tool in Yandex and is also available as a part of [Yandex Cloud](https://datalens.yandex.com) platform. See also [our roadmap](https://github.com/orgs/datalens-tech/projects/1), [releases notes](https://github.com/datalens-tech/datalens/releases) and [community in telegram](https://t.me/YandexDataLens).
 
 ## Getting started
 
@@ -31,7 +37,7 @@ DataLens requires Docker to be installed. Follow these instructions depending on
 Clone repository:
 
 ```bash
-git clone https://github.com/datalens-tech/datalens && cd datalens
+git clone https://github.com/blshark2008/datalens-fork.git && cd datalens-fork
 ```
 
 For the quick start use the following command to start DataLens containers:
