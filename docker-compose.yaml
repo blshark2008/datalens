@@ -40,6 +40,7 @@ services:
       INIT_EXTERNAL_POSTGRES: ${INIT_EXTERNAL_POSTGRES:-0}
     volumes:
       - db-postgres:/var/lib/postgresql/data
+      - ./postgres/post-init/post-init.sh:/init/post-init/post-init.sh
     networks:
       - default
   #
@@ -80,6 +81,15 @@ services:
   control-api:
     container_name: datalens-control-api
     image: ghcr.io/blshark2008/datalens-control-api:custom
+    build:
+      context: ./dev/python
+      args:
+        - image=ghcr.io/datalens-tech/datalens-control-api:0.2457.0
+    tty: true
+    volumes:
+      - ../datalens-backend/app:/src/app
+      - ../datalens-backend/lib:/src/lib
+      - ../datalens-backend/metapkg:/src/metapkg
     environment:
       BI_API_UWSGI_WORKERS_COUNT: 4
       RQE_FORCE_OFF: 1
